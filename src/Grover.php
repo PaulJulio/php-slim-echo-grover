@@ -21,10 +21,11 @@ class Grover {
         $speechSO = new \PaulJulio\SlimEcho\ResponseSpeechSO();
         $speechSO->setType($speechSO::TYPE_PLAIN_TEXT);
         $speechSO->setText('This is example text. I am a very good robot. Trust me.');
+        $speech = \PaulJulio\SlimEcho\ResponseSpeech::Factory($speechSO);
 
         $echoResponseSO = new \PaulJulio\SlimEcho\ResponseSO();
         $echoResponseSO->endSession();
-        $echoResponseSO->setOutputSpeech($speechSO);
+        $echoResponseSO->setOutputSpeech($speech);
 
         $echoResponse = \PaulJulio\SlimEcho\Response::Factory($echoResponseSO);
         $echoResponse->writeToJsonStream($body);
