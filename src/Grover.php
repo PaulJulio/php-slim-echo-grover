@@ -62,7 +62,7 @@ class Grover {
      * @return array
      */
     private function getUserRecord($userID) {
-        $userFN = __DIR__ . DIRECTORY_SEPARATOR . $userID;
+        $userFN = __DIR__ . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . $userID;
         if (file_exists($userFN)) {
             $user = json_decode(file_get_contents($userFN), true);
         } else {
@@ -74,7 +74,7 @@ class Grover {
     private function putUserRecord(array $user) {
         $user['last-seen'] = date('r');
         $user['version'] = 1;
-        $userFN = __DIR__ . DIRECTORY_SEPARATOR . $user['id'];
+        $userFN = __DIR__ . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR .$user['id'];
         file_put_contents($userFN, json_encode($user));
     }
 
