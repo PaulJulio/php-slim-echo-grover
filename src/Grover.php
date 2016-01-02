@@ -30,7 +30,7 @@ class Grover {
         $echoResponse = \PaulJulio\SlimEcho\Response::Factory($echoResponseSO);
         $echoResponse->writeToJsonStream($body);
 
-        return $response->withBody($body);
+        return $response->withBody($body)->withStatus(200);
     }
 
 }
