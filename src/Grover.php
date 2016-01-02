@@ -1,6 +1,8 @@
 <?php
 namespace PaulJulio\AmazonEchoGrover;
 
+use \PaulJulio\SlimEcho;
+
 class Grover {
     /**
      * @param  \Psr\Http\Message\ServerRequestInterface $request  PSR7 request
@@ -13,21 +15,27 @@ class Grover {
         $response = $next($request, $response);
         $body = $response->getBody();
 
-        $requestSO = new \PaulJulio\SlimEcho\RequestSO();
+        $requestSO = new SlimEcho\RequestSO();
         $requestSO->setHttpRequest($request->getBody());
-        $echoRequest = \PaulJulio\SlimEcho\Request::Factory($requestSO);
-        // make decisions based on the request
 
-        $speechSO = new \PaulJulio\SlimEcho\ResponseSpeechSO();
+        $echoRequest = SlimEcho\Request::Factory($requestSO);
+        $userID = $echoRequest->getUserID();
+        if (!isset($userID)) {
+            $body->offsetSet('error', 'No UserID found in request');
+            return $response->withBody($body)->withStatus(400);
+        }
+        $userFN = __DIR__ . DIRECTORY_SEPARATOR . $userID;
+
+        $speechSO = new SlimEcho\ResponseSpeechSO();
         $speechSO->setType($speechSO::TYPE_PLAIN_TEXT);
         $speechSO->setText('This is example text. I am a very good robot. Trust me.');
-        $speech = \PaulJulio\SlimEcho\ResponseSpeech::Factory($speechSO);
+        $speech = SlimEcho\ResponseSpeech::Factory($speechSO);
 
-        $echoResponseSO = new \PaulJulio\SlimEcho\ResponseSO();
+        $echoResponseSO = new SlimEcho\ResponseSO();
         $echoResponseSO->endSession();
         $echoResponseSO->setOutputSpeech($speech);
 
-        $echoResponse = \PaulJulio\SlimEcho\Response::Factory($echoResponseSO);
+        $echoResponse = SlimEcho\Response::Factory($echoResponseSO);
         $echoResponse->writeToJsonStream($body);
 
         return $response->withBody($body)->withStatus(200);
