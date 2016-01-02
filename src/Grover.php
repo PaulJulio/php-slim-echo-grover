@@ -2,7 +2,7 @@
 namespace PaulJulio\AmazonEchoGrover;
 
 use \PaulJulio\SlimEcho;
-use \PaulJulio\SettingsIni;
+use \PaulJulio\SettingsIni\SettingsSO;
 
 class Grover {
     /**
@@ -26,9 +26,9 @@ class Grover {
             $body->offsetSet('error', 'Missing settings.ini');
             return $response->withBody($body)->withStatus(400);
         }
-        $settingsSO = new SettingsIni\SettingsSO();
+        $settingsSO = new SettingsSO();
         $settingsSO->addSettingsFileName($settingsFN);
-        $settings = SettingsIni\Settings::Factory($settingsSO);
+        $settings = Settings::Factory($settingsSO);
         $appID = $echoRequest->getApplicationID();
         if (!isset($appID) || $appID !== $settings->id) {
             $body->offsetSet('error', 'Incorrect App ID');
