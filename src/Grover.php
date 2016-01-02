@@ -2,6 +2,7 @@
 namespace PaulJulio\AmazonEchoGrover;
 
 use \PaulJulio\SlimEcho;
+use \PaulJulio\SettingsIni;
 
 class Grover {
     /**
@@ -19,6 +20,15 @@ class Grover {
         $requestSO->setHttpRequest($request->getBody());
 
         $echoRequest = SlimEcho\Request::Factory($requestSO);
+
+        $settingsSO = new SettingsIni\SettingsSO();
+        $settingsSO->addSettingsFileName(__DIR__ . DIRECTORY_SEPARATOR . 'settings.ini');
+        $settings = SettingsIni\Settings::Factory($settingsSO);
+        $appID = $echoRequest->getApplicationID();
+        if (!isset($appID) || $appID !== $settings->id) {
+            $body->offsetSet('error', 'Incorrect App ID');
+            return $response->withBody($body)->withStatus(400);
+        }
         $userID = $echoRequest->getUserID();
         if (!isset($userID)) {
             $body->offsetSet('error', 'No UserID found in request');
