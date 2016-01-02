@@ -21,8 +21,13 @@ class Grover {
 
         $echoRequest = SlimEcho\Request::Factory($requestSO);
 
+        $settingsFN = __DIR__ . DIRECTORY_SEPARATOR . 'settings.ini';
+        if (!file_exists($settingsFN)) {
+            $body->offsetSet('error', 'Missing settings.ini');
+            return $response->withBody($body)->withStatus(400);
+        }
         $settingsSO = new SettingsIni\SettingsSO();
-        $settingsSO->addSettingsFileName(__DIR__ . DIRECTORY_SEPARATOR . 'settings.ini');
+        $settingsSO->addSettingsFileName($settingsFN);
         $settings = SettingsIni\Settings::Factory($settingsSO);
         $appID = $echoRequest->getApplicationID();
         if (!isset($appID) || $appID !== $settings->id) {
